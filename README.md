@@ -9,6 +9,10 @@
 - Proper volume management
 
 ## Prerequisites
+- Basic Packages
+  ```bash
+  apt install -y curl wget nano
+  ```
 - Docker 20.10+ 
   ```bash
   apt install -y docker.io
@@ -20,7 +24,7 @@
   ```
 - Git
   ```bash
-  apt install -y git curl wget nano
+  apt install -y git
   ```
 ## Quick Start
 
