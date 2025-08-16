@@ -14,6 +14,8 @@ RUN apk add --no-cache \
     postgresql-dev \
     librdkafka-dev \
     openssl-dev \
+    linux-headers \
+    musl-dev \
     && apk add --no-cache --virtual .build-deps \
     $PHPIZE_DEPS \
     && pecl install rdkafka \
@@ -29,7 +31,8 @@ RUN apk add --no-cache \
     pcntl \
     bcmath \
     opcache \
-    sockets \
+    && docker-php-ext-configure sockets --enable-sockets \
+    && docker-php-ext-install sockets \
     && apk del .build-deps
 
 # Install Composer
@@ -40,7 +43,7 @@ WORKDIR /var/www/html
 
 # Clone specific ProcessMaker version
 RUN git clone --branch 4.x --depth 1 https://github.com/wecanco/processmaker.git . \
-    && composer install --no-dev --optimize-autoloader --ignore-platform-reqs \
+    && composer install --no-dev --optimize-autoloader \
     && chown -R www-data:www-data storage bootstrap/cache
 
 # Copy entrypoint
