@@ -9,10 +9,19 @@
 - Proper volume management
 
 ## Prerequisites
-- Docker 20.10+
-- Docker Compose 1.29+
+- Docker 20.10+ 
+  ```bash
+  apt install -y docker.io
+  ```
+- Docker Compose 1.29+ 
+  ```bash
+  curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d'"' -f4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  chmod +x /usr/local/bin/docker-compose
+  ```
 - Git
-
+  ```bash
+  apt install -y git curl wget nano
+  ```
 ## Quick Start
 
 ### For MySQL version:
