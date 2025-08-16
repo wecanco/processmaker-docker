@@ -2,6 +2,10 @@ FROM php:8.2-fpm-alpine
 
 # Install dependencies
 RUN apk add --no-cache \
+    git \
+    curl \
+    wget \
+    nano \
     libzip-dev \
     libpng-dev \
     libjpeg-turbo-dev \
@@ -10,10 +14,6 @@ RUN apk add --no-cache \
     postgresql-dev \
     && docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install \
-    git \
-    curl \
-    wget \
-    nano \
     pdo_mysql \
     pdo_pgsql \
     zip \
