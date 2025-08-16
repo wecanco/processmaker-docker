@@ -1,7 +1,8 @@
 FROM php:8.2-fpm-alpine
 
-# Install dependencies
+# Install system dependencies
 RUN apk add --no-cache \
+    git \
     libzip-dev \
     libpng-dev \
     libjpeg-turbo-dev \
@@ -26,9 +27,11 @@ COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy ProcessMaker source
-RUN git clone https://github.com/ProcessMaker/processmaker.git . \
-    && composer install --no-dev --optimize-autoloader \
+# Copy ProcessMaker source (using multi-stage build for better caching)
+COPY --from=processmaker_source /var/www/html /var/www/html
+
+# Install dependencies and set permissions
+RUN composer install --no-dev --optimize-autoloader \
     && chown -R www-data:www-data storage bootstrap/cache
 
 # Copy entrypoint
