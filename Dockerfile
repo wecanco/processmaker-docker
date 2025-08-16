@@ -42,7 +42,7 @@ COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Clone specific ProcessMaker version
-RUN git clone --branch 4.x --depth 1 https://github.com/wecanco/processmaker.git . \
+RUN git clone https://github.com/wecanco/processmaker.git . \
     && composer install --no-dev --optimize-autoloader \
     && chown -R www-data:www-data storage bootstrap/cache
 
