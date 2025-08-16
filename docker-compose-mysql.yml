@@ -18,8 +18,6 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
-    networks:
-      - processmaker_network
 
   redis:
     image: redis:7-alpine
@@ -27,18 +25,13 @@ services:
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
-    networks:
-      - processmaker_network
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: pm_app
     env_file: .env
     environment:
-      DB_HOST: db
-      REDIS_HOST: redis
+      - COMPOSER_ALLOW_SUPERUSER=1
     volumes:
       - app_data:/var/www/html/storage
       - ./config/php/php.ini:/usr/local/etc/php/conf.d/processmaker.ini
@@ -47,8 +40,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-    networks:
-      - processmaker_network
 
   webserver:
     image: nginx:1.25-alpine
@@ -60,14 +51,8 @@ services:
       - app_data:/var/www/html:ro
     depends_on:
       - app
-    networks:
-      - processmaker_network
 
 volumes:
   mysql_data:
   redis_data:
   app_data:
-
-networks:
-  processmaker_network:
-    driver: bridge

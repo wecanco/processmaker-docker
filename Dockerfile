@@ -1,6 +1,6 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.3-fpm-alpine
 
-# Install dependencies
+# Install system dependencies
 RUN apk add --no-cache \
     git \
     curl \
@@ -12,6 +12,12 @@ RUN apk add --no-cache \
     libxml2-dev \
     oniguruma-dev \
     postgresql-dev \
+    librdkafka-dev \
+    openssl-dev \
+    && apk add --no-cache --virtual .build-deps \
+    $PHPIZE_DEPS \
+    && pecl install rdkafka \
+    && docker-php-ext-enable rdkafka \
     && docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install \
     pdo_mysql \
@@ -22,7 +28,9 @@ RUN apk add --no-cache \
     exif \
     pcntl \
     bcmath \
-    opcache
+    opcache \
+    sockets \
+    && apk del .build-deps
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
@@ -30,9 +38,9 @@ COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy ProcessMaker source
-RUN git clone https://github.com/wecanco/processmaker.git . \
-    && composer install --no-dev --optimize-autoloader \
+# Clone specific ProcessMaker version
+RUN git clone --branch 4.x --depth 1 https://github.com/ProcessMaker/processmaker.git . \
+    && composer install --no-dev --optimize-autoloader --ignore-platform-reqs \
     && chown -R www-data:www-data storage bootstrap/cache
 
 # Copy entrypoint

@@ -3,14 +3,14 @@
 set -e
 
 # Wait for database
-if [ "$DB_CONNECTION" = "pgsql" ]; then
-  until pg_isready -h db -U $DB_USERNAME -d $DB_DATABASE; do
-    echo "Waiting for PostgreSQL..."
+if [ "$DB_CONNECTION" = "mysql" ]; then
+  until mysqladmin ping -h db -u $DB_USERNAME -p$DB_PASSWORD --silent; do
+    echo "Waiting for MySQL..."
     sleep 2
   done
 else
-  until mysqladmin ping -h db -u $DB_USERNAME -p$DB_PASSWORD --silent; do
-    echo "Waiting for MySQL..."
+  until pg_isready -h db -U $DB_USERNAME -d $DB_DATABASE; do
+    echo "Waiting for PostgreSQL..."
     sleep 2
   done
 fi
@@ -27,4 +27,4 @@ fi
 # Fix permissions
 chown -R www-data:www-data /var/www/html/storage
 
-exec "$@"
+exec php-fpm
