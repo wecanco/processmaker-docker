@@ -27,6 +27,16 @@
   apt install -y git
   ```
 ## Quick Start
+### Clone the repository:
+```bash
+git clone https://github.com/wecanco/processmaker-docker.git
+cd processmaker-docker
+```
+### Generate APP_KEY:
+```bash
+openssl rand -base64 32 | sed 's/[+/=]/_/g' | cut -c1-32
+```
+Add to `.env` file
 
 ### For MySQL version:
 ```bash
